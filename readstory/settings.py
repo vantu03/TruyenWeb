@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-atk-qbuae1-95k1w6fz=v=r@@8t2)7@$s0%yg(qa6yqbk7(f6)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['readstory.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['truyenweb.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
