@@ -1,0 +1,50 @@
+{% include 'stories/base/header.html' %}
+
+<h2 class="mb-3"><i class="bi bi-journal-bookmark-fill me-2"></i>Truyện yêu thích</h2>
+<hr>
+
+{% if favorites %}
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    {% for fav in favorites %}
+        <div class="col-md-4 col-lg-2">
+            <div class="story-card h-100 border-1 rounded-1">
+                <a href="{% url 'story_detail' slug=fav.story.slug %}" class="story-link text-decoration-none">
+                    {% if fav.story.poster %}
+                        <img src="{{ fav.story.poster.url }}" class="card-img-top rounded-top object-fit-cover w-100" style="height: 250px;" alt="{{ fav.story.title }}">
+                    {% else %}
+                        <img src="/media/posters/poster.webp" class="card-img-top rounded-top object-fit-cover w-100" style="height: 250px;" alt="No image">
+                    {% endif %}
+                    <div class="card-body p-1">
+                        <h5 class="card-title story-title fw-bold fs-6 text-truncate">
+                            {{ fav.story.title }}
+                        </h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+  </div>
+
+  <!-- Phân trang -->
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Trước</a>
+        </li>
+      {% endif %}
+      <li class="page-item disabled"><span class="page-link">Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Sau</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+{% else %}
+  <p>Bạn chưa yêu thích truyện nào.</p>
+{% endif %}
+
+
+{% include 'stories/base/footer.html' %}

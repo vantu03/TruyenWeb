@@ -1,0 +1,26 @@
+{% load widget_tweaks %}
+
+{% include 'stories/base/header.html' %}
+<div class="container">
+    <h2><i class="bi bi-person-lines-fill"></i> Hồ sơ cá nhân</h2>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_first_name" class="form-label">Họ</label>
+            {{ form.first_name|attr:"class:form-control" }}
+        </div>
+        <div class="mb-3">
+            <label for="id_last_name" class="form-label">Tên</label>
+            {{ form.last_name|attr:"class:form-control" }}
+        </div>
+        <div class="mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            {{ form.email|attr:"class:form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Lưu thay đổi
+        </button>
+    </form>
+</div>
+
+{% include 'stories/base/footer.html' %}

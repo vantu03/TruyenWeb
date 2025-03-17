@@ -1,0 +1,121 @@
+{% include 'stories/base/header.html' %}
+<h2 class="mb-4"><i class="bi bi-book-half"></i> Danh sách truyện</h2>
+<hr>
+
+<form method="get" class="mb-4">
+    <!-- Dòng 1: Label + Input và nút tìm -->
+    <div class="row gy-2 gx-3 align-items-end mb-2">
+        <div class="col">
+            <label for="search-input" class="form-label mb-0 fw-semibold">Tìm kiếm</label>
+            <input id="search-input" type="text" name="q" class="form-control" placeholder="Tìm tên truyện..." value="{{ query }}">
+        </div>
+
+        <div class="col-auto">
+            <label class="form-label invisible">Tìm</label>
+            <button type="submit" class="btn btn-primary d-block">
+                <i class="bi bi-search"></i> Tìm
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Dòng 2: Select thể loại và lọc -->
+    <div class="row gy-2 gx-3">
+        <div class="col-sm-6 col-md-4">
+            <label for="category-select" class="form-label mb-0 fw-semibold">Thể loại</label>
+            <select id="category-select" name="category" class="form-select">
+                <option value="">Tất cả</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <label for="sort-select" class="form-label mb-0 fw-semibold">Lọc</label>
+            <select id="sort-select" name="sort" class="form-select">
+                <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Mới nhất</option>
+                <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Cũ nhất</option>
+                <option value="most_favorites" {% if sort == 'most_favorites' %}selected{% endif %}>Yêu thích nhất</option>
+                <option value="most_views" {% if sort == 'most_views' %}selected{% endif %}>Nhiều lượt xem nhất</option>
+            </select>
+        </div>
+    </div>
+</form>
+
+
+<div class="row g-2">
+    {% for story in stories %}
+        <div class="col-md-4 col-lg-2">
+            <div class="story-card h-100 border-1 rounded-1">
+                <a href="{% url 'story_detail' slug=story.slug %}" class="story-link text-decoration-none">
+                    {% if story.poster %}
+                        <img src="{{ story.poster.url }}" class="card-img-top rounded-top object-fit-cover w-100" style="height: 250px;" alt="{{ story.title }}">
+                    {% else %}
+                        <img src="/media/posters/poster.webp" class="card-img-top rounded-top object-fit-cover w-100" style="height: 250px;" alt="No image">
+                    {% endif %}
+                    <div class="card-body p-1">
+                        <h5 class="card-title story-title fw-bold fs-6 text-truncate">
+                            {{ story.title }}
+                        </h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning text-center" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i> Không có truyện nào.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<!-- PHÂN TRANG -->
+{% if page_obj.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query }}&category={{ selected_category }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">
+                    &laquo;
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?q={{ query }}&category={{ selected_category }}&sort={{ sort }}&page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query }}&category={{ selected_category }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">
+                    &raquo;
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selects = document.querySelectorAll('form select');
+        selects.forEach(select => {
+            select.addEventListener('change', function () {
+                this.form.submit();
+            });
+        });
+    });
+</script>
+
+{% include 'stories/base/footer.html' %}

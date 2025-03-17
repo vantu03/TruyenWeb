@@ -1,0 +1,40 @@
+{% include 'stories/base/header.html' %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h3 class="mb-3"><i class="bi bi-person-plus-fill"></i> Đăng ký tài khoản</h3>
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Tên đăng nhập</label>
+                    <input type="text" name="username" class="form-control" id="id_username"
+                           placeholder="Nhập tên đăng nhập"
+                           value="{{ form.username.value|default:'' }}">
+                    {{ form.username.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_password1" class="form-label">Mật khẩu</label>
+                    <input type="password" name="password1" class="form-control" id="id_password1"
+                           placeholder="Nhập mật khẩu">
+                    {{ form.password1.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_password2" class="form-label">Xác nhận mật khẩu</label>
+                    <input type="password" name="password2" class="form-control" id="id_password2"
+                           placeholder="Nhập lại mật khẩu">
+                    {{ form.password2.errors }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-person-check-fill"></i> Đăng ký
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% include 'stories/base/footer.html' %}

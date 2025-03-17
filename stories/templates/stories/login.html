@@ -1,0 +1,55 @@
+{% include 'stories/base/header.html' %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h3 class="mb-3"><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</h3>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Tên đăng nhập</label>
+                    <input type="text" name="username" id="id_username"
+                           class="form-control"
+                           placeholder="Nhập tên đăng nhập"
+                           value="{{ form.username.value|default:'' }}">
+                    {% if form.username.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.username.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Mật khẩu</label>
+                    <input type="password" name="password" id="id_password"
+                           class="form-control"
+                           placeholder="Nhập mật khẩu">
+                    {% if form.password.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.password.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Non-field errors -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger py-2">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-door-open-fill"></i> Đăng nhập
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% include 'stories/base/footer.html' %}
