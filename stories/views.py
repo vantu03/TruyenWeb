@@ -55,21 +55,18 @@ def story_detail(request, slug):
     # 🔥 Tăng lượt xem
     story.views += 1
     story.save(update_fields=['views'])
-
+    print("_______________________________________________________________________________")
+    print(request.user)
+    print("_______________________________________________________________________________")
     is_favorited = False
+    comments_list = []
     if request.user.is_authenticated:
         is_favorited = story.favorites.filter(id=request.user.id).exists()
-
-        # ✅ Nếu user đăng nhập: lấy bình luận approved hoặc của chính user
-        comments_list = story.comments.filter(
-            Q(status='approved') | Q(user=request.user)
-        ).select_related('user').order_by('-created_at')
+        comments_list = (story.comments.filter(status='approved') | story.comments.filter(user=request.user)).select_related('user').order_by('-created_at')
     else:
-        # ✅ Nếu chưa đăng nhập: chỉ lấy bình luận đã duyệt
-        comments_list = story.comments.filter(
-            status='approved'
-        ).select_related('user').order_by('-created_at')
-        
+        comments_list = story.comments.filter(status='approved').select_related('user').order_by('-created_at')
+
+    # 👉 Phân trang bình luận
     paginator = Paginator(comments_list, 10)  # 5 bình luận mỗi trang
     page_number = request.GET.get('page')
     comments = paginator.get_page(page_number)
