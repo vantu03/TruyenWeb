@@ -63,7 +63,7 @@ def story_detail(request, slug):
     paginator = Paginator(comments_list, 10)  # 5 bình luận mỗi trang
     page_number = request.GET.get('page')
     comments = paginator.get_page(page_number)
-    
+
     read_chapters = []
     if request.user.is_authenticated:
         read_chapters = ChapterView.objects.filter(user=request.user, chapter__story=story).values_list('chapter_id', flat=True)
@@ -209,7 +209,6 @@ def favorite_stories(request):
         'favorites': page_obj.object_list,  # danh sách Favorite object có .story
     })
 
-@login_required
 def chapter_detail(request, story_slug, chapter_number):
     story = get_object_or_404(Story, slug=story_slug)
     chapter = get_object_or_404(Chapter, story=story, chapter_number=chapter_number)
