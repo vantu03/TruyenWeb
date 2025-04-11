@@ -55,9 +55,6 @@ def story_detail(request, slug):
     # 🔥 Tăng lượt xem
     story.views += 1
     story.save(update_fields=['views'])
-    print("_______________________________________________________________________________")
-    print(request.user)
-    print("_______________________________________________________________________________")
     is_favorited = False
     comments_list = []
     if request.user.is_authenticated:
