@@ -74,6 +74,15 @@
                         <i class="bi bi-person-circle"></i> {{ user.username }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarUser">
+
+						{% if user.is_staff %}
+						<li>
+							<a class="dropdown-item" href="/admin/">
+								<i class="bi bi-shield-lock-fill"></i> Quản trị
+							</a>
+						</li>
+						{% endif %}
+
                         <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person-lines-fill"></i> Cá nhân</a></li>
                         <li><a class="dropdown-item" href="{% url 'favorite_stories' %}">
                             <i class="bi bi-heart-fill text-danger"></i> Yêu thích

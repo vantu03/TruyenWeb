@@ -1,11 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Story
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm
-from .models import Category, Comment
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
@@ -16,6 +14,8 @@ from openai import OpenAI
 from django.contrib.auth.decorators import user_passes_test
 import threading
 import time
+from .models import Story, Category, Comment, Favorite, Chapter, ChapterView, Favorite, Story
+
 
 
 def toggle_theme(request):
@@ -24,9 +24,6 @@ def toggle_theme(request):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def index(request):
-    now = timezone.now()
-    recent_days = now - timedelta(days=7)  # 7 ngày gần nhất
-
     # 🔥 Top truyện được yêu thích nhiều nhất
     top_favorite = Story.objects.annotate(
         fav_count=Count('favorites')
@@ -35,10 +32,8 @@ def index(request):
     # 🔥 Top truyện xem nhiều nhất
     top_views = Story.objects.order_by('-views', '-created_at')[:10]
 
-    # 🔥 Top truyện mới được yêu thích (trong 7 ngày gần đây)
-    top_recent_favorite = Story.objects.filter(
-        favorites__date_joined__gte=recent_days
-    ).annotate(
+    # 🔥 Top truyện yêu thích (bỏ giới hạn 7 ngày)
+    top_recent_favorite = Story.objects.annotate(
         recent_fav_count=Count('favorites')
     ).order_by('-recent_fav_count')[:10]
 
@@ -47,6 +42,7 @@ def index(request):
         'top_views': top_views,
         'top_recent_favorite': top_recent_favorite,
     })
+
 
 def story_detail(request, slug):
     story = get_object_or_404(Story, slug=slug)
@@ -67,12 +63,17 @@ def story_detail(request, slug):
     paginator = Paginator(comments_list, 10)  # 5 bình luận mỗi trang
     page_number = request.GET.get('page')
     comments = paginator.get_page(page_number)
+    
+    read_chapters = []
+    if request.user.is_authenticated:
+        read_chapters = ChapterView.objects.filter(user=request.user, chapter__story=story).values_list('chapter_id', flat=True)
 
     return render(request, 'stories/story_detail.html', {
         'story': story,
         'chapters': chapters,
         'is_favorited': is_favorited,
         'comments': comments,
+        'read_chapters': list(read_chapters),
     })
 
 def story_list(request):
@@ -194,7 +195,6 @@ def moderate_pending_comments():
 
 @login_required
 def favorite_stories(request):
-    from .models import Favorite  # đảm bảo import nếu chưa
 
     # Lấy danh sách các bản ghi yêu thích của user hiện tại, kèm truyện liên quan
     favorite_records = Favorite.objects.filter(user=request.user).select_related('story').order_by('-created_at')
@@ -207,6 +207,26 @@ def favorite_stories(request):
     return render(request, 'stories/favorite_stories.html', {
         'page_obj': page_obj,
         'favorites': page_obj.object_list,  # danh sách Favorite object có .story
+    })
+
+@login_required
+def chapter_detail(request, story_slug, chapter_number):
+    story = get_object_or_404(Story, slug=story_slug)
+    chapter = get_object_or_404(Chapter, story=story, chapter_number=chapter_number)
+
+    # Ghi nhận đã đọc
+    if request.user.is_authenticated:
+        ChapterView.objects.get_or_create(user=request.user, chapter=chapter)
+
+    # prev/next (nếu có)
+    prev_chapter = Chapter.objects.filter(story=story, chapter_number__lt=chapter.chapter_number).order_by('-chapter_number').first()
+    next_chapter = Chapter.objects.filter(story=story, chapter_number__gt=chapter.chapter_number).order_by('chapter_number').first()
+
+    return render(request, 'stories/chapter_detail.html', {
+        'story': story,
+        'chapter': chapter,
+        'prev_chapter': prev_chapter,
+        'next_chapter': next_chapter,
     })
 
 

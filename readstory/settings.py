@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-atk-qbuae1-95k1w6fz=v=r@@8t2)7@$s0%yg(qa6yqbk7(f6)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['truyenweb.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'stories',
     'widget_tweaks',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,24 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # thư mục để collectstatic
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': [
+            {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat']},
+            {'name': 'paragraph', 'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote']},
+            {'name': 'styles', 'items': ['Format', 'Font', 'FontSize']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            {'name': 'insert', 'items': ['Image', 'Table', 'HorizontalRule']},
+            {'name': 'links', 'items': ['Link', 'Unlink']},
+            {'name': 'tools', 'items': ['Maximize', 'Source']},
+        ],
+        'height': 400,
+        'width': 'auto',
+        'autoGrow_onStartup': True,
+        'removePlugins': 'resize',
+        'extraPlugins': 'autogrow',
+        'tabSpaces': 4,
+        'toolbarCanCollapse': True,
+    }
+}

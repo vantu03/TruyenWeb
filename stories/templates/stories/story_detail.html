@@ -90,20 +90,10 @@
     {% for chapter in chapters %}
     <div class="accordion-item">
         <h2 class="accordion-header" id="heading{{ chapter.id }}">
-            <button class="accordion-button collapsed fw-semibold" type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapse{{ chapter.id }}"
-                    aria-expanded="false"
-                    aria-controls="collapse{{ chapter.id }}">
-                <i class="bi bi-chevron-down me-2"></i>{{ chapter.title }} (Chương {{ chapter.chapter_number }})
-            </button>
+            <a href="{% url 'chapter_detail' story.slug chapter.chapter_number %}" class="accordion-button collapsed fw-semibold text-decoration-none {% if chapter.id in read_chapters %}opacity-50{% endif %}">
+                <i class="bi bi-chevron-right me-2"></i> (Chương {{ chapter.chapter_number }}) {{ chapter.title }}
+            </a>
         </h2>
-        <div id="collapse{{ chapter.id }}" class="accordion-collapse collapse"
-             aria-labelledby="heading{{ chapter.id }}">
-            <div class="accordion-body">
-                {{ chapter.content|linebreaks }}
-            </div>
-        </div>
     </div>
     {% empty %}
     <div class="alert alert-warning">
@@ -111,6 +101,7 @@
     </div>
     {% endfor %}
 </div>
+
 <script>
     function shareStory() {
         if (navigator.share) {

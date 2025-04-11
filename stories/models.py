@@ -85,3 +85,14 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.user.username} yêu thích '{self.story.title}'"
+        
+class ChapterView(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
+    viewed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'chapter')  # mỗi chương chỉ lưu 1 lần đọc với mỗi user
+
+    def __str__(self):
+        return f"{self.user.username} đã đọc {self.chapter}"

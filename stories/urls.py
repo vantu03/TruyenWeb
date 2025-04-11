@@ -9,4 +9,5 @@ urlpatterns = [
     path('story/<slug:slug>/comment/', views.add_comment, name='add_comment'),
     path('favorites/', views.favorite_stories, name='favorite_stories'),
     path('moderate/', views.manual_moderation_view, name='manual_moderation'),
+    path('story/<slug:story_slug>/chapter/<int:chapter_number>/', views.chapter_detail, name='chapter_detail'),
 ]

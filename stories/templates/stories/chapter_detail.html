@@ -1,0 +1,55 @@
+{% include 'stories/base/header.html' %}
+
+<div class="container mt-4 mb-5">
+
+    <!-- Điều hướng -->
+    <div class="mb-3">
+        <a href="{% url 'story_detail' chapter.story.slug %}" class="text-decoration-none text-secondary">
+            <i class="bi bi-arrow-left-circle-fill"></i> Trở về truyện: <strong>{{ chapter.story.title }}</strong>
+        </a>
+    </div>
+
+    <!-- Tiêu đề chương -->
+    <div class="bg-light p-4 rounded shadow-sm">
+        <h2 class="text-primary mb-2">
+            <i class="bi bi-journal-text"></i> {{ chapter.title }}
+        </h2>
+        <p class="text-muted mb-0">
+            <i class="bi bi-hash"></i> Chương {{ chapter.chapter_number }}
+        </p>
+    </div>
+
+    <!-- Nội dung chương -->
+    <div class="chapter-content mt-4 p-4 bg-white rounded shadow-sm border">
+        {{ chapter.content|safe }}
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const images = document.querySelectorAll('.chapter-content img');
+            images.forEach(img => {
+                img.style.width = '100%';
+                img.style.height = 'auto';
+            });
+        });
+    </script>
+
+    <!-- Nút điều hướng chương -->
+    <div class="d-flex justify-content-between mt-4">
+        {% if prev_chapter %}
+            <a href="{% url 'chapter_detail' prev_chapter.story.slug prev_chapter.chapter_number %}" class="btn btn-outline-primary">
+                <i class="bi bi-chevron-left"></i> Chương trước
+            </a>
+        {% else %}
+            <div></div>  {# giữ bố cục không bị lệch #}
+        {% endif %}
+
+        {% if next_chapter %}
+            <a href="{% url 'chapter_detail' next_chapter.story.slug next_chapter.chapter_number %}" class="btn btn-outline-primary">
+                Chương sau <i class="bi bi-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+
+</div>
+
+{% include 'stories/base/footer.html' %}
