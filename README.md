@@ -27,7 +27,7 @@ Dự án xây dựng website đọc truyện chữ online sử dụng **Django**
 
 | Trang chủ | Đọc truyện | Giao diện ban đêm |
 |-----------|------------|--------------------|
-| ![home](Screenshot 2025-04-14 183044.png) | ![read](Screenshot 2025-04-14 183242.png) | ![dark](Screenshot 2025-04-14 183150.png) |
+| ![home](home.png) | ![read](read.png) | ![dark](darkmode.png) |
 
 ---
 
